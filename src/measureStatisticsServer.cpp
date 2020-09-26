@@ -51,14 +51,15 @@ int main() {
     perror("bind failed"); 
     exit(EXIT_FAILURE); 
   } 
-      
-  unsigned int len = sizeof(cliaddr);  //len is value/result 
-  int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
-               MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len); 
-  buffer[n] = '\0'; 
-  printf("Client : %s\n", buffer); 
-  sendto(sockfd, MESSAGE, strlen(MESSAGE),  
-         MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len); 
-  printf("Hello message sent.\n");  
+  while (true) { 
+    unsigned int len = sizeof(cliaddr);  //len is value/result 
+    int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
+                     MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len); 
+    buffer[n] = '\0'; 
+    printf("Verify Client : %s\n", buffer); 
+    sendto(sockfd, MESSAGE, strlen(MESSAGE),  
+           MSG_CONFIRM, (const struct sockaddr *) &cliaddr, len); 
+    printf("Hello message sent.\n"); 
+  }
   return 0;
 }

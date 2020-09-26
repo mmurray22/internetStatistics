@@ -6,6 +6,7 @@
  * Code attribution-Basic Client implementation found here:
  * https://www.geeksforgeeks.org/udp-server-client-implementation-c/
  */
+#include <chrono>
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <unistd.h> 
@@ -38,19 +39,26 @@ int main() {
     servaddr.sin_port = htons(PORT); 
     servaddr.sin_addr.s_addr = INADDR_ANY; 
       
-    unsigned int len; 
-      
-    sendto(sockfd, (const char *)MESSAGE, strlen(MESSAGE), 
-        MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
-            sizeof(servaddr)); 
-    printf("Hello message sent.\n"); 
-          
-    int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
-                MSG_WAITALL, (struct sockaddr *) &servaddr, 
-                &len); 
-    buffer[n] = '\0'; 
-    printf("Server : %s\n", buffer); 
-  
-    close(sockfd); 
+    unsigned int len;
+    double rttClient = 0;
+    while (true) {  
+      auto start = std::chrono::steady_clock::now();
+      sendto(sockfd, (const char *)MESSAGE, strlen(MESSAGE), 
+             MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
+             sizeof(servaddr)); 
+      auto end1 = std::chrono::steady_clock::now();
+      std::chrono::duration<double> elapsed_seconds1 = end1 - start;
+      printf("Client Sent: %f ms\n", elapsed_seconds1.count()*1000); 
+ 
+      int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
+                       MSG_WAITALL, (struct sockaddr *) &servaddr, 
+                       &len); 
+      auto end2 = std::chrono::steady_clock::now();
+      std::chrono::duration<double> elapsed_seconds2 = end2 - start;
+      buffer[n] = '\0'; 
+      printf("Server Reply: %f ms\n", elapsed_seconds2.count()*1000); 
+    }
+    
+    close(sockfd);
     return 0; 
 } 
