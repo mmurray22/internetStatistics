@@ -3,6 +3,9 @@
  * Analyze jitter/bunching on the network
  *
  * Compilation one-liner: g++ measureStatisticsServer.cpp -o measureStatisticsServer
+ *
+ * Code attribution-Basic server implementation found here:
+ * https://www.geeksforgeeks.org/udp-server-client-implementation-c/
  */
 #include <stdio.h> 
 #include <stdlib.h> 

@@ -1,7 +1,10 @@
 /*
  * Internet Statistics Client
  *
- * Compilation line: g++ measureStatisticsClient.cpp -o measureStatisticsClient 
+ * Compilation line: g++ measureStatisticsClient.cpp -o measureStatisticsClient
+ *
+ * Code attribution-Basic Client implementation found here:
+ * https://www.geeksforgeeks.org/udp-server-client-implementation-c/
  */
 #include <stdio.h> 
 #include <stdlib.h> 
