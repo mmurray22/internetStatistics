@@ -36,15 +36,10 @@ int main() {
   memset(&cliaddr, 0, sizeof(cliaddr)); 
       
   // Filling server information 
-  servaddr.sin_family = AF_INET; // IPv4 
-  servaddr.sin_addr.s_addr = INADDR_ANY; 
+  servaddr.sin_family = AF_INET; 
   servaddr.sin_port = htons(PORT);
+  inet_aton("171.67.76.94", &servaddr.sin_addr);
 
-  // Filling server information 
-  servaddr.sin_family = AF_INET; // IPv4 
-  servaddr.sin_addr.s_addr = INADDR_ANY; 
-  servaddr.sin_port = htons(PORT); 
- 
   // Bind the socket with the server address 
   if ( bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ) 
   { 

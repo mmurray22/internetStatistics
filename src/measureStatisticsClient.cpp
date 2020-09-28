@@ -36,8 +36,8 @@ int main() {
       
     // Filling server information 
     servaddr.sin_family = AF_INET; 
-    servaddr.sin_port = htons(PORT); 
-    servaddr.sin_addr.s_addr = INADDR_ANY; 
+    servaddr.sin_port = htons(PORT);
+    inet_aton("171.67.76.94", &servaddr.sin_addr);
       
     unsigned int len;
     double rttClient = 0;
