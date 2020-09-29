@@ -41,6 +41,7 @@ int main() {
       
     unsigned int len;
     double rttClient = 0;
+    unsigned int num_packets = 0;
     while (true) {  
       auto start = std::chrono::steady_clock::now();
       sendto(sockfd, (const char *)MESSAGE, strlen(MESSAGE), 
@@ -48,7 +49,7 @@ int main() {
              sizeof(servaddr)); 
       auto end1 = std::chrono::steady_clock::now();
       std::chrono::duration<double> elapsed_seconds1 = end1 - start;
-      printf("Client Sent: %f ms\n", elapsed_seconds1.count()*1000); 
+      //printf("Client Sent: %f ms\n", elapsed_seconds1.count()*1000); 
  
       int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                        MSG_WAITALL, (struct sockaddr *) &servaddr, 
@@ -57,8 +58,13 @@ int main() {
       std::chrono::duration<double> elapsed_seconds2 = end2 - start;
       buffer[n] = '\0'; 
       printf("Server Reply: %f ms\n", elapsed_seconds2.count()*1000); 
+      num_packets++;
+      rttClient += elapsed_seconds2.count();
+      if (rttClient >= 1) {
+        break;	
+      }
     }
-    
+    printf("Number of packets sent by server: %d\n", num_packets);
     close(sockfd);
     return 0; 
 } 
