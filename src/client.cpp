@@ -5,6 +5,13 @@
  *
  * Code attribution-Basic Client implementation found here:
  * https://www.geeksforgeeks.org/udp-server-client-implementation-c/
+ *
+ *
+ * Current Observations:
+ * It says it takes 10s for it to send 4000 packets to the server
+ * This is only 400 packets/sec, but we want 4000 packets/sec
+ * It also seems that the packets are being sent after 2.5 +/- .00009
+ * which seems quite good. So why the cut in packets/sec?
  */
 #include <chrono>
 #include <cmath>
@@ -57,19 +64,24 @@ int main(int argc, char *argv[]) {
   while (true) {
     auto checkpoint = std::chrono::steady_clock::now();
     time_passed = (std::chrono::steady_clock::now()-start);
-    if (temp_reference + DELAY > time_passed.count()) {
-      printf("It took %f ms to send another packet!", temp_reference*1000);
+    //printf("Time passed: %f ms\n", time_passed.count()*1000);
+    if (temp_reference + DELAY < time_passed.count()) {
+      //printf("It took %f ms to send another packet!\n", (time_passed.count()-temp_reference)*1000);
       temp_reference = time_passed.count();
+    } else {
       continue;
     }
     sendto(sockfd, (const char *)MESSAGE, strlen(MESSAGE), 
            MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
            sizeof(servaddr)); 
     number_of_packets++;
-    if (number_of_packets > 10000) {
+    if (number_of_packets > 4000) {
       break;
     }
   }
+  auto end = std::chrono::steady_clock::now();
+  time_passed = end-start;
+  printf("Total time elapsed: %f s\n", time_passed.count());
   close(sockfd);
   return 0; 
 } 
