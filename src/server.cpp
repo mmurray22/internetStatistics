@@ -6,6 +6,8 @@
  *
  * Code attribution-Basic server implementation found here:
  * https://www.geeksforgeeks.org/udp-server-client-implementation-c/
+ *
+ * Current Observations:
  */
 
 #include <stdio.h> 
