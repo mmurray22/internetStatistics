@@ -23,7 +23,7 @@
 #define SERV_ADDR "171.67.76.94"
 #define PORT 8080 
 #define MAXLINE 1024 
-#define DELAY .00025
+#define DELAY .0025
 
 const char* MESSAGE = "Alohaalohaalohaalohaalohaalohaalohaaloha"; //40 bytes
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
            MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
            sizeof(servaddr)); 
     number_of_packets++;
-    if (number_of_packets % 4000 == 0) {
+    if (number_of_packets % 400 == 0) {
       auto end = std::chrono::steady_clock::now();
       time_passed = end-start;
       printf("Total time elapsed: %f s\n", time_passed.count());
