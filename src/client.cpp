@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
       auto end = std::chrono::steady_clock::now();
       time_passed = end-start;
       printf("Total time elapsed: %f s\n", time_passed.count());
-      break;
     }
   }
   close(sockfd);

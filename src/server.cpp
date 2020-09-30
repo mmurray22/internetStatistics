@@ -9,6 +9,7 @@
  *
  * Current Observations:
  */
+
 #include <chrono>
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -19,6 +20,7 @@
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
 #include <string>
+#include <vector>
 
 #define PORT 8080
 #define MAXLINE 1024
@@ -40,6 +42,9 @@ void complete_sockaddr_info(sockaddr_in& servaddr, sockaddr_in& cliaddr) {
   servaddr.sin_addr.s_addr = INADDR_ANY;
 }
 
+void export_csv() {
+}
+
 int main() {
   int sockfd;
   char buffer[MAXLINE];
@@ -53,17 +58,23 @@ int main() {
     perror("bind failed"); 
     exit(EXIT_FAILURE); 
   }
+
+  std::vector<double> all_times;
+  int num_packets_received = 0;
   auto start = std::chrono::steady_clock::now();
   while (true) { 
     auto start = std::chrono::steady_clock::now();
     int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                      MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len); 
-    buffer[n] = '\0'; 
+    buffer[n] = '\0';
+    num_packets_received++;
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> time_lapse = end - start;
-    if (time_lapse.count() > 0.0001) {
-      printf("Packet processed in: %f\n", time_lapse.count());
+    all_times.push_back(time_lapse.count());
+    if (num_packets_received > 4000) {
+      break;
     }
   }
+  close(sockfd);
   return 0;
 }
