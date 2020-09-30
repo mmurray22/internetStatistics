@@ -9,7 +9,8 @@
  *
  * Current Observations:
  */
-
+#include <iostream>
+#include <fstream>
 #include <chrono>
 #include <stdio.h> 
 #include <stdlib.h> 
@@ -42,7 +43,12 @@ void complete_sockaddr_info(sockaddr_in& servaddr, sockaddr_in& cliaddr) {
   servaddr.sin_addr.s_addr = INADDR_ANY;
 }
 
-void export_csv() {
+void export_csv(std::vector<double>& all_times) {
+  std::fstream fout;
+  fout.open("all_times.csv", std::ios::out|std::ios::app);
+  for (int i = 0; i < all_times.size(); i++) {
+    fout << all_times.at(i) << "\n";
+  }
 }
 
 int main() {
@@ -63,18 +69,16 @@ int main() {
   int num_packets_received = 0;
   auto start = std::chrono::steady_clock::now();
   while (true) { 
-    auto start = std::chrono::steady_clock::now();
     int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                      MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len); 
     buffer[n] = '\0';
     num_packets_received++;
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> time_lapse = end - start;
     all_times.push_back(time_lapse.count());
     if (num_packets_received > 4000) {
       break;
     }
   }
+  export_csv(all_times);
   close(sockfd);
   return 0;
 }
