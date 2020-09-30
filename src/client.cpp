@@ -27,7 +27,7 @@
 #define SERV_ADDR "171.67.76.94"
 #define PORT 7654 
 #define MAXLINE 1024 
-#define DELAY .0025
+#define DELAY .00025
 
 const char* MESSAGE = "Alohaalohaalohaalohaalohaalohaalohaaloha"; //40 bytes
 
@@ -57,10 +57,6 @@ int main(int argc, char *argv[]) {
   auto start = std::chrono::steady_clock::now();
   std::chrono::duration<double> time_passed;
   double temp_reference = 0;
-
-  sendto(sockfd, (const char *)MESSAGE, strlen(MESSAGE), 
-           MSG_CONFIRM, (const struct sockaddr *) &servaddr,  
-           sizeof(servaddr)); 
   while (true) {
     auto checkpoint = std::chrono::steady_clock::now();
     time_passed = (std::chrono::steady_clock::now()-start);
