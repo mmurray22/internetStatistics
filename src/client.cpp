@@ -21,7 +21,7 @@
 #include <netinet/in.h> 
 
 #define SERV_ADDR "171.67.76.94"
-#define PORT 7654 
+#define PORT 8080 
 #define MAXLINE 1024 
 #define DELAY .00025
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in servaddr; 
   create_socket_fd(sockfd);
   complete_server_info(servaddr);
-  
+ 
   int number_of_packets = 1;
   auto start = std::chrono::steady_clock::now();
   std::chrono::duration<double> time_passed;
@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
       auto end = std::chrono::steady_clock::now();
       time_passed = end-start;
       printf("Total time elapsed: %f s\n", time_passed.count());
+      break;
     }
   }
   close(sockfd);
