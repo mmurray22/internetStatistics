@@ -9,7 +9,7 @@
  *
  * Current Observations:
  */
-
+#include <chrono>
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <unistd.h> 
@@ -20,7 +20,6 @@
 #include <netinet/in.h> 
 #include <string>
 
-#define SERV_ADDR "171.67.76.94"
 #define PORT 8080
 #define MAXLINE 1024
 
@@ -33,39 +32,38 @@ void create_socket_fd(int& sockfd) {
 }
 
 //Filling server information
-void complete_server_info(sockaddr_in& servaddr) {
-  memset(&servaddr, 0, sizeof(servaddr)); 
-  servaddr.sin_family = AF_INET; 
-  servaddr.sin_port = htons(PORT);
-  inet_aton(SERV_ADDR, &servaddr.sin_addr);
-}
-
-/*void complete_client_info(sockaddr_in& cliaddr) {
+void complete_sockaddr_info(sockaddr_in& servaddr, sockaddr_in& cliaddr) {
+  memset(&servaddr, 0, sizeof(servaddr));
   memset(&cliaddr, 0, sizeof(cliaddr)); 
   servaddr.sin_family = AF_INET; 
   servaddr.sin_port = htons(PORT);
-}*/
+  servaddr.sin_addr.s_addr = INADDR_ANY;
+}
 
 int main() {
   int sockfd;
   char buffer[MAXLINE];
   struct sockaddr_in servaddr, cliaddr;
+  unsigned int len = sizeof(cliaddr);
   create_socket_fd(sockfd); 
-  complete_server_info(servaddr);
-  //complete_client_info(cliaddr);
+  complete_sockaddr_info(servaddr, cliaddr);
 
   // Bind the socket with the server address 
   if ( bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ) { 
     perror("bind failed"); 
     exit(EXIT_FAILURE); 
   }
-
+  auto start = std::chrono::steady_clock::now();
   while (true) { 
-    unsigned int len = sizeof(cliaddr);  //len is value/result 
+    auto start = std::chrono::steady_clock::now();
     int n = recvfrom(sockfd, (char *)buffer, MAXLINE,  
                      MSG_WAITALL, ( struct sockaddr *) &cliaddr, &len); 
     buffer[n] = '\0'; 
-    printf("Verify Client : %s\n", buffer); 
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> time_lapse = end - start;
+    if (time_lapse.count() > 0.0001) {
+      printf("Packet processed in: %f\n", time_lapse.count());
+    }
   }
   return 0;
 }
